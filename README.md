@@ -1,4 +1,4 @@
-# Barcode Backgroud
+# Barcode Background
 
 **Base on Enterprise Module stock_barcode**
 
