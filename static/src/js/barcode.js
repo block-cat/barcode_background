@@ -9,6 +9,13 @@ odoo.define("barcode_background.line_widget", function (require) {
 
 
     widgets.include({
+        // start: function () {
+        //     var self = this;
+        //     return this._super.apply(this, arguments).then(function () {
+        //         return self._renderLines();
+        //     });
+        // },
+
         incrementProduct: function (id_or_virtual_id, qty, model, doNotClearLineHighlight) {
             var $line = this.$("[data-id='" + id_or_virtual_id + "']");
             var incrementClass = model === 'stock.picking' ? '.qty-done' : '.product_qty';
@@ -76,6 +83,29 @@ odoo.define("barcode_background.line_widget", function (require) {
 
             // 设置黄色背景
             $line.css("background", "#FFEC8B");
+        },
+
+        _renderLines: function () {
+            this._super();
+            // 检查每行
+            var $lines =  this.$el.find(".o_barcode_line");
+            $lines.each(function(index,item){
+                var qty_done = parseFloat($(this).find(".qty-done").text());
+                var total = parseFloat($(this).find(".o_barcode_scanner_qty > span").last().text().split("/")[1]);
+                if (qty_done === total) {
+                    // "--设置完成背景色--"
+                    $(this).css("background", "#90EE90");
+                }
+                else if (qty_done < total) {
+                    // "--渐变效果--"
+                    var x = (qty_done / total) * 100;
+                    var csx = "-webkit-gradient(linear, 0 0, " + x + "% " + x + "%" + ", from(#87CEFA), to(#FFFFFF))"
+                    $(this).css({
+                        "background": csx
+                    });
+                }
+            });
+            
         }
     });
 
